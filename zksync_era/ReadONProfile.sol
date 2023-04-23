@@ -11,14 +11,14 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 
 contract ReadONProfile is
-    Initializable,
-    ERC721,
-    ERC721Enumerable,
-    Pausable,
-    AccessControl,
-    ERC721Burnable
+Initializable,
+ERC721,
+ERC721Enumerable,
+Pausable,
+AccessControl,
+ERC721Burnable
 {
-    event registerName(address indexed register,string indexed name,uint256 indexed tokenId);
+    event registerName(address indexed register,uint256 indexed tokenId,string name);
 
     uint8 internal constant _MIN_HANDLE_LENGTH = 5;
     uint8 internal constant _MAX_HANDLE_LENGTH = 20;
@@ -53,9 +53,9 @@ contract ReadONProfile is
         _requireMinted(tokenId);
         string memory baseURI = _baseURI();
         return
-            bytes(baseURI).length > 0
-                ? string(abi.encodePacked(baseURI, tokenId.toString()))
-                : "";
+        bytes(baseURI).length > 0
+        ? string(abi.encodePacked(baseURI, tokenId.toString()))
+        : "";
     }
 
     function pause() public onlyRole(PAUSE_ROLE) {
@@ -101,7 +101,7 @@ contract ReadONProfile is
         _safeMint(receiver, realId);
         taken[realId] = true;
         getNameById[realId] = name;
-        emit registerName(receiver,name,realId);
+        emit registerName(receiver,realId,name);
     }
 
     function _beforeTokenTransfer(
@@ -117,10 +117,10 @@ contract ReadONProfile is
     function supportsInterface(
         bytes4 interfaceId
     )
-        public
-        view
-        override(ERC721, ERC721Enumerable, AccessControl)
-        returns (bool)
+    public
+    view
+    override(ERC721, ERC721Enumerable, AccessControl)
+    returns (bool)
     {
         return super.supportsInterface(interfaceId);
     }
@@ -139,9 +139,9 @@ contract ReadONProfile is
                 (b >= "0" && b <= "9") || (b >= "a" && b <= "z") || b == "_",
                 "ReadON:INVALID_CHARACTER"
             );
-            unchecked {
-                ++i;
-            }
+        unchecked {
+            ++i;
+        }
         }
     }
 }
