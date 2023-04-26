@@ -44,20 +44,6 @@ ERC721Burnable
         return "https://readon-api.readon.me/v1/era/meta/";
     }
 
-    /**
-     * @dev See {IERC721Metadata-tokenURI}.
-     */
-    function tokenURI(
-        uint256 tokenId
-    ) public view virtual override returns (string memory) {
-        _requireMinted(tokenId);
-        string memory baseURI = _baseURI();
-        return
-        bytes(baseURI).length > 0
-        ? string(abi.encodePacked(baseURI, tokenId.toString()))
-        : "";
-    }
-
     function pause() public onlyRole(PAUSE_ROLE) {
         _pause();
     }
@@ -90,6 +76,10 @@ ERC721Burnable
 
     function mint(string calldata name) external {
         __mint(name, msg.sender);
+    }
+
+    function mintTo(address to,string calldata name) external {
+        __mint(name, to);
     }
 
     function __mint(string calldata name, address receiver) internal {
